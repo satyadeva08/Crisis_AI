@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MapPin, Navigation, Loader2 } from 'lucide-react';
 import { useGeolocation } from '../../hooks/useGeolocation';
 import './LocationPicker.css';
@@ -18,27 +18,16 @@ export default function LocationPicker({ onLocationSelect }) {
     requestLocation();
   }
 
-  // When geolocation succeeds, notify parent
-  useState(() => {
-    // Empty state initializer, we use useEffect to trigger updates cleanly
-  });
-
-  const [lastNotifiedPos, setLastNotifiedPos] = useState(null);
-
-  useState(() => {}); // Maintain clean structure
-
-  // Safely trigger callback on position updates
-  const posKey = position ? `${position.lat}_${position.lng}` : null;
-  const lastKey = lastNotifiedPos ? `${lastNotifiedPos.lat}_${lastNotifiedPos.lng}` : null;
-
-  if (posKey && posKey !== lastKey && mode === 'auto') {
-    setLastNotifiedPos(position);
-    onLocationSelect({
-      lat: position.lat,
-      lng: position.lng,
-      address: `${position.lat.toFixed(4)}, ${position.lng.toFixed(4)}`,
-    });
-  }
+  // Safely trigger callback on position updates when they change
+  useEffect(() => {
+    if (position && mode === 'auto') {
+      onLocationSelect({
+        lat: position.lat,
+        lng: position.lng,
+        address: `${position.lat.toFixed(4)}, ${position.lng.toFixed(4)}`,
+      });
+    }
+  }, [position, mode, onLocationSelect]);
 
   function handleManualSubmit() {
     if (!manualAddress.trim()) return;
