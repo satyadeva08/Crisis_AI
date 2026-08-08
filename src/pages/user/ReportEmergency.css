@@ -1,0 +1,184 @@
+/* ==============================
+   Report Emergency Page Styles
+   ============================== */
+
+.report-page {
+  min-height: 100vh;
+  background: var(--color-bg-secondary);
+}
+
+.report-main {
+  padding: var(--space-10) 0 var(--space-16);
+}
+
+/* ── Page Header ── */
+.report-header {
+  text-align: center;
+  margin-bottom: var(--space-10);
+}
+
+.report-header-icon {
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-critical-light);
+  color: var(--color-critical);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-4);
+}
+
+.report-header-title {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-3);
+}
+
+.report-header-description {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* ── Form Card ── */
+.report-form {
+  background: var(--color-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-xs);
+}
+
+/* ── Form Sections ── */
+.report-section {
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.report-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: var(--space-8);
+}
+
+.report-label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.report-required {
+  color: var(--color-critical);
+}
+
+.report-help {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-3);
+  line-height: 1.5;
+}
+
+.report-error {
+  font-size: var(--text-sm);
+  color: var(--color-critical);
+  margin-top: var(--space-2);
+}
+
+/* ── Form Inputs ── */
+.report-select,
+.report-input,
+.report-textarea {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  background: var(--color-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast);
+}
+
+.report-select:focus,
+.report-input:focus,
+.report-textarea:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+}
+
+.report-select::placeholder,
+.report-input::placeholder,
+.report-textarea::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.report-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.report-textarea-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+.report-contact-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+/* ── Submit Button ── */
+.report-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 14px;
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-white);
+  background: var(--color-critical);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  margin-bottom: var(--space-4);
+}
+
+.report-submit-btn:hover:not(:disabled) {
+  background: #B91C1C;
+  box-shadow: var(--shadow-md);
+}
+
+.report-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Disclaimer ── */
+.report-disclaimer {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .report-form {
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+  }
+
+  .report-contact-row {
+    grid-template-columns: 1fr;
+  }
+}

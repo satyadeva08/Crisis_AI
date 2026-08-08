@@ -1,0 +1,38 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+/* Severity badges — filled background */
+.badge-severity {
+  color: var(--badge-color);
+  background: var(--badge-bg);
+  border: 1px solid var(--badge-border);
+}
+
+/* Status badges — more subtle */
+.badge-status {
+  color: var(--badge-color);
+  background: transparent;
+  border: 1px solid var(--badge-border);
+}
+
+/* Animated dot for status badges */
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--badge-color);
+}
+
+/* Active status gets a pulsing dot */
+.badge-active .badge-dot {
+  animation: pulse 2s ease-in-out infinite;
+}

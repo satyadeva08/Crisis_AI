@@ -1,0 +1,127 @@
+/* ==============================
+   Processing Page Styles
+   ============================== */
+
+.processing-page {
+  min-height: 100vh;
+  background: var(--color-bg-secondary);
+}
+
+.processing-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--navbar-height));
+  padding: var(--space-8) 0;
+}
+
+.processing-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-xl);
+  padding: var(--space-10) var(--space-8);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  animation: fadeInUp 0.4s ease;
+  max-width: 480px;
+  width: 100%;
+}
+
+/* ── Main Icon ── */
+.processing-icon {
+  width: 64px;
+  height: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-tertiary);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-6);
+  transition: all var(--transition-slow);
+}
+
+.processing-icon.complete {
+  background: var(--color-low-light);
+  color: var(--color-active);
+}
+
+/* ── Text ── */
+.processing-title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.processing-description {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-8);
+  line-height: 1.6;
+}
+
+/* ── Steps List ── */
+.processing-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  text-align: left;
+}
+
+.processing-step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.processing-step-indicator {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.processing-step-label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+}
+
+/* Step states */
+.processing-step.pending {
+  opacity: 0.4;
+}
+
+.processing-step.pending .processing-step-indicator {
+  color: var(--color-text-tertiary);
+}
+
+.processing-step.pending .processing-step-label {
+  color: var(--color-text-tertiary);
+}
+
+.processing-step.active {
+  background: var(--color-bg-secondary);
+}
+
+.processing-step.active .processing-step-indicator {
+  color: var(--color-accent);
+}
+
+.processing-step.active .processing-step-label {
+  color: var(--color-text-primary);
+}
+
+.processing-step.done .processing-step-indicator {
+  color: var(--color-active);
+}
+
+.processing-step.done .processing-step-label {
+  color: var(--color-text-primary);
+}

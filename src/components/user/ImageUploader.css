@@ -1,0 +1,96 @@
+.image-uploader {
+  width: 100%;
+}
+
+/* ── Drop Zone ── */
+.image-uploader-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-6);
+  border: 2px dashed var(--color-border-medium);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.image-uploader-dropzone:hover,
+.image-uploader-dropzone.dragging {
+  border-color: var(--color-primary);
+  background: var(--color-bg-tertiary);
+}
+
+.image-uploader-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-white);
+  color: var(--color-text-tertiary);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-light);
+}
+
+.image-uploader-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.image-uploader-text strong {
+  color: var(--color-text-primary);
+}
+
+.image-uploader-hint {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* ── Preview ── */
+.image-uploader-preview {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border-light);
+}
+
+.image-uploader-preview img {
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+}
+
+.image-uploader-remove {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--color-white);
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast);
+}
+
+.image-uploader-remove:hover {
+  background: var(--color-critical);
+}
+
+/* ── Hidden Input ── */
+.image-uploader-input {
+  display: none;
+}
+
+/* ── Error ── */
+.image-uploader-error {
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-critical);
+}
