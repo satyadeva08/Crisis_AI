@@ -1,18 +1,30 @@
-import { api } from './api';
+import { supabase } from './supabase';
+
+/**
+ * Auth service — handles authority login/logout.
+ *
+ * Currently uses mock credentials for the hackathon demo.
+ * When Supabase Auth is configured with real users, set USE_MOCK = false
+ * and it will use supabase.auth.signInWithPassword().
+ */
 
 const USE_MOCK = true;
-const delay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms = 500) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Mock credentials
+// Mock credentials for demo
 const MOCK_CREDENTIALS = {
   email: 'admin@disaster-response.gov',
   password: 'admin123',
 };
 
 export const authService = {
+  /**
+   * Log in with email and password.
+   */
   async login(email, password) {
     if (USE_MOCK) {
       await delay(800);
+
       if (email === MOCK_CREDENTIALS.email && password === MOCK_CREDENTIALS.password) {
         const mockToken = 'mock_jwt_token_' + Date.now();
         const user = {
@@ -26,24 +38,53 @@ export const authService = {
         localStorage.setItem('auth_user', JSON.stringify(user));
         return { token: mockToken, user };
       }
+
       throw new Error('Invalid email or password');
     }
-    const response = await api.post('/auth/login', { email, password });
-    localStorage.setItem('auth_token', response.token);
-    localStorage.setItem('auth_user', JSON.stringify(response.user));
-    return response;
+
+    // Real Supabase Auth (activate when users are created in Supabase Dashboard)
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) throw new Error(error.message);
+
+    const user = {
+      id: data.user.id,
+      name: data.user.user_metadata?.name || 'Authority User',
+      email: data.user.email,
+      role: 'authority',
+    };
+
+    localStorage.setItem('auth_token', data.session.access_token);
+    localStorage.setItem('auth_user', JSON.stringify(user));
+    return { token: data.session.access_token, user };
   },
 
-  logout() {
+  /**
+   * Log out the current user.
+   */
+  async logout() {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('auth_user');
+
+    if (!USE_MOCK) {
+      await supabase.auth.signOut();
+    }
   },
 
+  /**
+   * Get the currently stored user.
+   */
   getUser() {
     const user = localStorage.getItem('auth_user');
     return user ? JSON.parse(user) : null;
   },
 
+  /**
+   * Check if a user is currently authenticated.
+   */
   isAuthenticated() {
     return !!localStorage.getItem('auth_token');
   },

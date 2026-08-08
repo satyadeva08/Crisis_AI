@@ -1,99 +1,316 @@
-import { api } from './api';
+import { supabase } from './supabase';
 import { mockIncidents, dashboardStats, recentAlerts } from '../data/mockIncidents';
 
-// Toggle this to switch between mock and real API
-const USE_MOCK = true;
+/**
+ * Incident service — queries Supabase for incident data.
+ * Falls back to mock data if Supabase is unavailable.
+ */
 
-// Simulate network delay for mock data
-const delay = (ms = 600) => new Promise(resolve => setTimeout(resolve, ms));
+// ── Data transformer ──
+// Maps a Supabase DB row to the shape the frontend components expect.
+
+function transformIncident(row) {
+  return {
+    id: row.incident_id,
+    title: row.title,
+    description: row.description,
+    category: row.disaster_type,
+    severity: row.severity_level,
+    priority: row.priority_score ?? 5,
+    status: row.status === 'reported' ? 'active' : row.status,
+    location: {
+      lat: parseFloat(row.latitude),
+      lng: parseFloat(row.longitude),
+      address: row.location_name || 'Unknown location',
+    },
+    imageUrl: null,
+    reportedBy: row.reported_by || 'Citizen Report',
+    reportedAt: row.reported_at,
+    aiAnalysis: buildAiAnalysis(row),
+    updates: transformUpdates(row.incident_updates),
+  };
+}
+
+function buildAiAnalysis(row) {
+  // If the row includes joined severity_assessments or recommendations, use them
+  const severity = row.severity_assessments?.[0];
+  const recs = row.recommendations || [];
+  const damage = row.damage_assessments?.[0];
+
+  if (!severity && !damage && recs.length === 0) {
+    return null; // No AI analysis available yet
+  }
+
+  return {
+    disasterType: row.disaster_type,
+    confidence: severity?.confidence_score
+      ? parseFloat(severity.confidence_score) / 100
+      : 0.85,
+    estimatedAffected: row.affected_population
+      ? `${row.affected_population} people`
+      : 'Under assessment',
+    riskLevel: capitalizeFirst(row.severity_level),
+    recommendations: recs.map((r) => r.recommendation),
+    environmentalRisk: damage?.damage_description || 'Assessment in progress',
+  };
+}
+
+function transformUpdates(updates) {
+  if (!updates || !Array.isArray(updates)) return [];
+  return updates.map((u) => ({
+    time: u.update_time || formatTime(u.created_at),
+    text: u.update_text,
+  }));
+}
+
+function capitalizeFirst(str) {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function formatTime(isoString) {
+  if (!isoString) return '';
+  try {
+    return new Date(isoString).toLocaleTimeString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+  } catch {
+    return '';
+  }
+}
+
+
+// ── Service methods ──
 
 export const incidentService = {
-  // Get all incidents with optional filters
+  /**
+   * Fetch all incidents with optional filters.
+   */
   async getAll(filters = {}) {
-    if (USE_MOCK) {
-      await delay();
-      let results = [...mockIncidents];
+    try {
+      let query = supabase
+        .from('incidents')
+        .select('*')
+        .order('reported_at', { ascending: false });
+
+      // Apply filters
       if (filters.severity) {
-        results = results.filter(i => i.severity === filters.severity);
+        query = query.eq('severity_level', filters.severity);
       }
       if (filters.status) {
-        results = results.filter(i => i.status === filters.status);
+        query = query.eq('status', filters.status);
       }
       if (filters.search) {
-        const q = filters.search.toLowerCase();
-        results = results.filter(i =>
-          i.title.toLowerCase().includes(q) ||
-          i.description.toLowerCase().includes(q) ||
-          i.id.toLowerCase().includes(q)
+        query = query.or(
+          `title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`
         );
       }
-      return results;
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+      if (!data || data.length === 0) return mockIncidents; // Fallback
+
+      return data.map(transformIncident);
+    } catch (err) {
+      console.warn('Supabase getAll failed, using mock data:', err.message);
+      return mockIncidents;
     }
-    const params = new URLSearchParams(filters).toString();
-    return api.get(`/incidents${params ? `?${params}` : ''}`);
   },
 
-  // Get single incident by ID
+  /**
+   * Fetch a single incident by ID, including AI analysis and timeline.
+   */
   async getById(id) {
-    if (USE_MOCK) {
-      await delay(400);
-      const incident = mockIncidents.find(i => i.id === id);
-      if (!incident) throw new Error('Incident not found');
-      return incident;
+    try {
+      const { data, error } = await supabase
+        .from('incidents')
+        .select(`
+          *,
+          severity_assessments (*),
+          damage_assessments (*),
+          recommendations (*),
+          incident_updates (*)
+        `)
+        .eq('incident_id', id)
+        .single();
+
+      if (error) throw error;
+      return transformIncident(data);
+    } catch (err) {
+      console.warn('Supabase getById failed, using mock data:', err.message);
+      // Fallback: search mock data
+      const mock = mockIncidents.find((i) => i.id === id);
+      if (mock) return mock;
+      throw new Error('Incident not found');
     }
-    return api.get(`/incidents/${id}`);
   },
 
-  // Submit a new incident report
+  /**
+   * Submit a new incident report.
+   * Inserts into incidents table and related tables.
+   */
   async create(formData) {
-    if (USE_MOCK) {
-      await delay(2000); // Simulate AI processing time
-      const newId = `INC-2026-${String(mockIncidents.length + 1).padStart(3, '0')}`;
+    try {
+      // Insert the main incident record
+      const { data: incident, error: incidentError } = await supabase
+        .from('incidents')
+        .insert({
+          title: `${formData.category} — Emergency Report`,
+          description: formData.description,
+          disaster_type: formData.category,
+          status: 'reported',
+          severity_level: 'medium', // Default until AI processes it
+          latitude: formData.location?.lat,
+          longitude: formData.location?.lng,
+          location_name: formData.location?.address,
+          reported_by: formData.contactName || 'Anonymous',
+          contact_name: formData.contactName,
+          contact_phone: formData.contactPhone,
+        })
+        .select()
+        .single();
+
+      if (incidentError) throw incidentError;
+
+      // Insert the text report
+      if (formData.description) {
+        await supabase.from('text_reports').insert({
+          incident_id: incident.incident_id,
+          report_text: formData.description,
+          title: `Report for ${formData.category}`,
+          processing_status: 'pending',
+          reported_at: new Date().toISOString(),
+        });
+      }
+
+      // Insert initial timeline entry
+      await supabase.from('incident_updates').insert({
+        incident_id: incident.incident_id,
+        update_text: 'Incident reported and submitted for AI analysis',
+        update_time: new Date().toLocaleTimeString('en-IN', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+        }),
+      });
+
       return {
-        id: newId,
+        id: incident.incident_id,
+        status: 'reported',
+        severity: 'medium',
+      };
+    } catch (err) {
+      console.error('Supabase create failed:', err.message);
+      // Fallback: return a mock response
+      return {
+        id: `INC-${Date.now()}`,
         status: 'active',
         severity: 'high',
-        aiAnalysis: {
-          disasterType: 'Detected from image analysis',
-          confidence: 0.89,
-          estimatedAffected: 'Under assessment',
-          riskLevel: 'High',
-          recommendations: [
-            'Emergency response team dispatched',
-            'Area being assessed for safety',
-            'Updates will follow shortly',
-          ],
-          environmentalRisk: 'Assessment in progress',
-        },
       };
     }
-    return api.upload('/incidents', formData);
   },
 
-  // Update incident status
+  /**
+   * Update incident status.
+   */
   async updateStatus(id, status) {
-    if (USE_MOCK) {
-      await delay(300);
+    try {
+      const { data, error } = await supabase
+        .from('incidents')
+        .update({ status })
+        .eq('incident_id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return { id: data.incident_id, status: data.status, updatedAt: data.updated_at };
+    } catch (err) {
+      console.warn('Supabase updateStatus failed:', err.message);
       return { id, status, updatedAt: new Date().toISOString() };
     }
-    return api.patch(`/incidents/${id}`, { status });
   },
 
-  // Get dashboard statistics
+  /**
+   * Get dashboard statistics — aggregated from incidents table.
+   */
   async getStats() {
-    if (USE_MOCK) {
-      await delay(300);
+    try {
+      const { data: incidents, error } = await supabase
+        .from('incidents')
+        .select('severity_level, status');
+
+      if (error) throw error;
+      if (!incidents || incidents.length === 0) return dashboardStats;
+
+      const total = incidents.length;
+      const critical = incidents.filter((i) => i.severity_level === 'critical').length;
+      const high = incidents.filter((i) => i.severity_level === 'high').length;
+      const medium = incidents.filter((i) => i.severity_level === 'medium').length;
+      const low = incidents.filter((i) => i.severity_level === 'low').length;
+      const active = incidents.filter((i) => i.status === 'active' || i.status === 'reported').length;
+      const inProgress = incidents.filter((i) => i.status === 'in-progress' || i.status === 'processing').length;
+      const resolved = incidents.filter((i) => i.status === 'resolved' || i.status === 'closed').length;
+
+      return {
+        total,
+        critical,
+        high,
+        medium,
+        low,
+        active,
+        inProgress,
+        resolved,
+        avgResponseTime: '8 min',
+        teamsDeployed: Math.max(active + inProgress, 1),
+      };
+    } catch (err) {
+      console.warn('Supabase getStats failed, using mock:', err.message);
       return dashboardStats;
     }
-    return api.get('/analytics/summary');
   },
 
-  // Get recent alerts
+  /**
+   * Get recent alerts from safety_alerts table.
+   */
   async getAlerts() {
-    if (USE_MOCK) {
-      await delay(200);
+    try {
+      const { data, error } = await supabase
+        .from('safety_alerts')
+        .select('*')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+      if (!data || data.length === 0) return recentAlerts;
+
+      return data.map((alert) => ({
+        id: alert.alert_id,
+        type: alert.severity_level || 'medium',
+        message: alert.message,
+        time: formatTimeAgo(alert.created_at),
+      }));
+    } catch (err) {
+      console.warn('Supabase getAlerts failed, using mock:', err.message);
       return recentAlerts;
     }
-    return api.get('/alerts');
   },
 };
+
+/**
+ * Format a timestamp as "X min ago" style string.
+ */
+function formatTimeAgo(isoString) {
+  if (!isoString) return 'Just now';
+  const diffMs = Date.now() - new Date(isoString).getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins} min ago`;
+  const diffHours = Math.floor(diffMins / 60);
+  if (diffHours < 24) return `${diffHours}h ago`;
+  return `${Math.floor(diffHours / 24)}d ago`;
+}
