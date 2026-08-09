@@ -132,14 +132,34 @@ def create_emergency_report():
         image_path = processed_data["image"].get("path")
 
         if image_path:
-
             vision_result = gemini_vision_service.analyze_image(
-            image_path=image_path,
-            emergency_description=processed_data["description"],
-            location=processed_data["location"]
-        )
+                image_path=image_path,
+                emergency_description=processed_data["description"],
+                location=processed_data["location"]
+            )
 
         vision_data = vision_result
+
+        # Check if Gemini flagged the image as irrelevant or fake
+        if vision_data.get("success"):
+            consistency = vision_data.get("claim_consistency", "").lower()
+            status = vision_data.get("verification_status", "").lower()
+            
+            if consistency == "inconsistent" or status == "likely_fake":
+                
+                # Delete the invalid image
+                try:
+                    if image_path and os.path.exists(image_path):
+                        os.remove(image_path)
+                except Exception:
+                    pass
+                    
+                reason = vision_data.get("claim_consistency_reason", "The image does not appear to depict an emergency.")
+                
+                return jsonify({
+                    "success": False,
+                    "error": f"Image Verification Failed: {reason} Please upload a valid photo of the emergency."
+                }), 400
 
     else:
 
