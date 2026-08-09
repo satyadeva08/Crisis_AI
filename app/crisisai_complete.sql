@@ -2,8 +2,6 @@
 -- PostgreSQL database dump
 --
 
-\restrict h0zePZVE5Dn0AdLy23zGnyomycAAwd9vkocjLzmmfEA0KQxZOuGMTqvOQfVURoz
-
 -- Dumped from database version 18.4
 -- Dumped by pg_dump version 18.4
 
@@ -932,5 +930,4 @@ ALTER TABLE ONLY public.data_sources
 -- PostgreSQL database dump complete
 --
 
-\unrestrict h0zePZVE5Dn0AdLy23zGnyomycAAwd9vkocjLzmmfEA0KQxZOuGMTqvOQfVURoz
-
+--

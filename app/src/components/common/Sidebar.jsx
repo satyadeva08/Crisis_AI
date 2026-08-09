@@ -1,7 +1,8 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Map, BarChart3, Bell, LogOut, Shield, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Map, BarChart3, Bell, LogOut, Shield, ChevronLeft, ChevronRight, Settings } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useState } from 'react';
+import AdminSettingsModal from './AdminSettingsModal';
 import './Sidebar.css';
 
 const navItems = [
@@ -13,6 +14,9 @@ const navItems = [
 export default function Sidebar() {
   const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
+  const [showAdminModal, setShowAdminModal] = useState(false);
+  
+  const isAdmin = user?.email === 'admin@disaster-response.gov';
 
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
@@ -63,11 +67,22 @@ export default function Sidebar() {
             </div>
           </div>
         )}
+        {isAdmin && (
+          <button className="sidebar-link" onClick={() => setShowAdminModal(true)} title="Admin Settings">
+            <Settings size={20} />
+            {!collapsed && <span>Admin Settings</span>}
+          </button>
+        )}
         <button className="sidebar-link sidebar-logout" onClick={logout} title="Sign out">
           <LogOut size={20} />
           {!collapsed && <span>Sign Out</span>}
         </button>
       </div>
+
+      <AdminSettingsModal 
+        isOpen={showAdminModal} 
+        onClose={() => setShowAdminModal(false)} 
+      />
     </aside>
   );
 }

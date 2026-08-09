@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import PasswordResetModal from '../../components/common/PasswordResetModal';
 import './Login.css';
 
 /**
@@ -21,6 +22,7 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -88,7 +90,7 @@ export default function Login() {
               id="login-email"
               type="email"
               className="login-input"
-              placeholder="admin@disaster-response.gov"
+              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -96,11 +98,20 @@ export default function Login() {
             />
           </div>
 
-          {/* Password */}
           <div className="login-field">
-            <label className="login-label" htmlFor="login-password">
-              Password
-            </label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-2)' }}>
+              <label className="login-label" htmlFor="login-password" style={{ marginBottom: 0 }}>
+                Password
+              </label>
+              <button 
+                type="button" 
+                className="login-footer-link" 
+                style={{ fontSize: 'var(--text-xs)' }}
+                onClick={() => setShowResetModal(true)}
+              >
+                Forgot Password?
+              </button>
+            </div>
             <div className="login-password-wrapper">
               <input
                 id="login-password"
@@ -150,6 +161,11 @@ export default function Login() {
 
         </form>
       </div>
+
+      <PasswordResetModal 
+        isOpen={showResetModal} 
+        onClose={() => setShowResetModal(false)} 
+      />
     </div>
   );
 }
