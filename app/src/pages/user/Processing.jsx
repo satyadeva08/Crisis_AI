@@ -96,12 +96,8 @@ export default function Processing() {
           });
         }, 800);
       } else if (submitError) {
-        // If it failed, just go to success with a fallback or show error
-        setTimeout(() => {
-          navigate('/report/success', {
-            state: { incidentId: `ERR-FALLBACK-${Math.floor(Math.random()*1000)}` },
-          });
-        }, 800);
+        // Stop animation and do not navigate if there is a fatal API error
+        // The UI will be handled by rendering the error below
       }
     }
   }, [isComplete, realIncidentId, submitError, navigate]);
@@ -158,6 +154,23 @@ export default function Processing() {
                 );
               })}
             </div>
+
+            {submitError && (
+              <div className="processing-error-message" style={{ marginTop: '20px', padding: '15px', backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                <h3 style={{ margin: '0 0 5px 0', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Shield size={16} /> API Error
+                </h3>
+                <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.4' }}>
+                  {submitError}
+                </p>
+                <button 
+                  onClick={() => navigate(-1)}
+                  style={{ marginTop: '15px', padding: '8px 16px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                >
+                  Go Back & Try Again
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </main>
