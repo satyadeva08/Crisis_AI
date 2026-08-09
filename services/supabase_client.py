@@ -11,4 +11,10 @@ if not SUPABASE_URL or not SUPABASE_KEY:
     print("WARNING: Supabase URL or Key not found in environment variables.")
     supabase: Client = None
 else:
-    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    try:
+        supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+        print("Supabase connected successfully")
+    except Exception as e:
+        print("ERROR initializing Supabase:")
+        print(str(e))
+        supabase: Client = None
