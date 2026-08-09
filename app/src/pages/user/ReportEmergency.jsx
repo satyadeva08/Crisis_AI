@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, Send } from 'lucide-react';
+import { AlertTriangle, Send, ChevronDown } from 'lucide-react';
 import Navbar from '../../components/common/Navbar';
 import ImageUploader from '../../components/user/ImageUploader';
 import LocationPicker from '../../components/user/LocationPicker';
@@ -19,6 +19,8 @@ export default function ReportEmergency() {
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
+  const [customCategory, setCustomCategory] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [location, setLocation] = useState(null);
   const [contactName, setContactName] = useState('');
   const [contactPhone, setContactPhone] = useState('');
@@ -39,6 +41,8 @@ export default function ReportEmergency() {
     }
     if (!category) {
       newErrors.category = 'Please select a disaster category';
+    } else if (category === 'Other' && !customCategory.trim()) {
+      newErrors.category = 'Please specify the custom category';
     }
     if (!location) {
       newErrors.location = 'Please provide your location';
@@ -56,10 +60,12 @@ export default function ReportEmergency() {
     setIsSubmitting(true);
 
     // Bundle form data for the processing page
+    const finalCategory = category === 'Other' ? `Other: ${customCategory.trim()}` : category;
+
     const reportData = {
       image,
       description: description.trim(),
-      category,
+      category: finalCategory,
       location,
       contactName: contactName.trim(),
       contactPhone: contactPhone.trim(),
@@ -113,17 +119,49 @@ export default function ReportEmergency() {
               <label className="report-label" htmlFor="category">
                 Disaster Category <span className="report-required">*</span>
               </label>
-              <select
-                id="category"
-                className="report-select"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              >
-                <option value="">Select a category…</option>
-                {DISASTER_CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
+              
+              <div className="custom-dropdown-container">
+                <button
+                  type="button"
+                  className={`report-select ${isDropdownOpen ? 'open' : ''} ${!category ? 'placeholder' : ''}`}
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
+                  {category || 'Select a category…'}
+                  <ChevronDown size={18} className="report-select-icon" />
+                </button>
+
+                {isDropdownOpen && (
+                  <div className="custom-dropdown-menu">
+                    {DISASTER_CATEGORIES.map((cat) => (
+                      <button
+                        key={cat}
+                        type="button"
+                        className={`custom-dropdown-item ${category === cat ? 'selected' : ''}`}
+                        onClick={() => {
+                          setCategory(cat);
+                          setIsDropdownOpen(false);
+                        }}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {category === 'Other' && (
+                <div className="report-custom-category animate-fade-in-up">
+                  <input
+                    type="text"
+                    className="report-input"
+                    placeholder="Specify the emergency type…"
+                    value={customCategory}
+                    onChange={(e) => setCustomCategory(e.target.value)}
+                    autoFocus
+                  />
+                </div>
+              )}
+              
               {errors.category && <p className="report-error">{errors.category}</p>}
             </div>
 

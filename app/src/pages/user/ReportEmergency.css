@@ -111,7 +111,74 @@
   border-color: var(--color-border-focus);
 }
 
-.report-select::placeholder,
+/* Custom Dropdown Specifics */
+.custom-dropdown-container {
+  position: relative;
+}
+
+.report-select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  cursor: pointer;
+}
+
+.report-select.placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.report-select.open {
+  border-color: var(--color-border-focus);
+}
+
+.report-select-icon {
+  color: var(--color-text-tertiary);
+  transition: transform var(--transition-fast);
+}
+
+.report-select.open .report-select-icon {
+  transform: rotate(180deg);
+}
+
+.custom-dropdown-menu {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  width: 100%;
+  background: var(--color-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 10;
+  max-height: 240px;
+  overflow-y: auto;
+  animation: fadeInUp 0.2s ease forwards;
+}
+
+.custom-dropdown-item {
+  width: 100%;
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  background: transparent;
+  transition: background var(--transition-fast);
+}
+
+.custom-dropdown-item:hover {
+  background: var(--color-bg-secondary);
+}
+
+.custom-dropdown-item.selected {
+  background: var(--color-bg-tertiary);
+  font-weight: var(--font-medium);
+}
+
+.report-custom-category {
+  margin-top: var(--space-3);
+}
+
 .report-input::placeholder,
 .report-textarea::placeholder {
   color: var(--color-text-placeholder);
