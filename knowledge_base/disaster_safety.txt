@@ -75,3 +75,21 @@ Immediate chemical actions:
 - Rescue personnel must wear Level A HAZMAT suits.
 - Identify the specific chemicals involved before applying water, as water can react violently with certain industrial materials.
 - Treat toxic gas leaks or chemical fires as Critical Severity immediately.
+
+FIRE SAFETY AND RESCUE (URBAN/BUILDING LOCALITY)
+Fires in dense residential or commercial buildings spread rapidly and carry severe risks of smoke inhalation, structural collapse, and mass casualties.
+Immediate urban fire actions:
+- Evacuate the burning building and all immediately adjacent structures.
+- Deploy high-capacity aerial ladder firetrucks and multiple EMS units.
+- Identify and secure highly flammable materials or gas lines in nearby structures.
+- Scan windows for trapped residents.
+- Escalate to High or Critical Severity immediately based on building height and density.
+
+WILDFIRE AND FOREST FIRE SAFETY (RURAL/NATURE LOCALITY)
+Wildfires and forest fires spread unpredictably due to wind and consume natural vegetation, threatening isolated properties and wildlife.
+Immediate wildfire actions:
+- Map the fire perimeter, wind direction, and speed to establish large-scale evacuation zones.
+- Deploy aerial water bombers and specialized wildland fire crews.
+- Create firebreaks by clearing trees and brush ahead of the fire's path.
+- Warn populations in the projected path about severe air quality drops and smoke inhalation risks.
+- If the fire is nearing a town or residential zone, escalate to Critical Severity immediately.

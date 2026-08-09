@@ -153,12 +153,13 @@ Identify:
 - buildings
 - roads
 - water
-- fire
+- fire (if present, identify fuel source: buildings, forests, trees, vehicles)
 - smoke
 - structural damage
 - electrical hazards
 - accessibility problems
 - possible rescue requirements
+- vulnerable surroundings (e.g., dense buildings near a fire)
 
 Estimate visual severity from 1 to 10.
 
