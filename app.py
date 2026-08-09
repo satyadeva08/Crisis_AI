@@ -1,3 +1,4 @@
+# pyrefly: ignore [missing-import]
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
@@ -267,8 +268,15 @@ def create_emergency_report():
 
         except Exception as db_err:
             print("Database Insert Error:", str(db_err))
-            # Even if DB insert fails, we return the AI report to the frontend
-            pass
+            return jsonify({
+                "success": False,
+                "error": f"Database Error: Failed to save the report to Supabase. Reason: {str(db_err)}"
+            }), 500
+    else:
+        return jsonify({
+            "success": False,
+            "error": "Database Error: Supabase client is not connected. Check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY."
+        }), 500
 
     report["image_url"] = public_image_url
 
