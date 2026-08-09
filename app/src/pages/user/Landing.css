@@ -8,12 +8,19 @@
 
 /* ── Hero Section ── */
 .landing-hero {
-  padding: var(--space-16) 0 var(--space-20);
+  padding: var(--space-12) 0 var(--space-16);
   background: var(--color-bg-primary);
 }
 
+.landing-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-12);
+  align-items: center;
+}
+
 .landing-hero-content {
-  max-width: 680px;
+  max-width: 600px;
 }
 
 .landing-hero-label {
@@ -310,9 +317,17 @@
     align-items: flex-start;
   }
 
+  .landing-hero-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+  
+  .landing-hero-title {
+    font-size: var(--text-4xl);
+  }
+
   .landing-hero-stats {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
     gap: var(--space-4);
   }
 
@@ -320,9 +335,12 @@
     display: none;
   }
 
-  .landing-steps {
-    grid-template-columns: 1fr;
+  .landing-process .landing-steps {
     gap: var(--space-6);
+  }
+
+  .landing-step-icon {
+    margin-bottom: var(--space-3);
   }
 
   .landing-features-grid {

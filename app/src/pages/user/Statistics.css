@@ -1,689 +1,122 @@
-/* =========================================
-   CRISISAI — DISASTER STATISTICS
-   ========================================= */
-
-.statistics-page {
-  min-height: 100vh;
-  background: var(--color-white);
-  color: var(--color-text-primary);
+.statistics-panel {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
 }
 
-/* =========================================
-   HERO
-   ========================================= */
-
-.statistics-hero {
-  background: var(--color-bg-dark);
-  color: var(--color-white);
-  padding: 90px 0 80px;
-}
-
-.statistics-hero-content {
-  max-width: 850px;
-}
-
-.statistics-eyebrow {
-  display: inline-flex;
+.statistics-panel-header {
+  display: flex;
   align-items: center;
-  gap: 9px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  color: #94a3b8;
-  margin-bottom: 24px;
+  gap: var(--space-2);
 }
 
 .statistics-eyebrow-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
+  background: var(--color-primary);
   border-radius: 50%;
-  background: var(--color-critical);
-  box-shadow: 0 0 0 5px rgba(220, 38, 38, 0.15);
-}
-
-.statistics-hero h1 {
-  font-size: clamp(42px, 7vw, 76px);
-  line-height: 1.02;
-  letter-spacing: -0.045em;
-  margin-bottom: 26px;
-  font-weight: 800;
-}
-
-.statistics-hero h1 span {
-  display: block;
-  color: #94a3b8;
-}
-
-.statistics-hero p {
-  max-width: 650px;
-  color: #cbd5e1;
-  font-size: 18px;
-  line-height: 1.7;
-}
-
-.statistics-period {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  margin-top: 35px;
-  padding: 10px 15px;
-  border: 1px solid #334155;
-  border-radius: var(--radius-md);
-  color: #94a3b8;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-}
-
-.statistics-period strong {
-  color: white;
-}
-
-/* =========================================
-   GENERAL SECTIONS
-   ========================================= */
-
-.statistics-section {
-  padding: 85px 0;
-}
-
-.statistics-light-section {
-  background: var(--color-bg-secondary);
-}
-
-.statistics-section-heading {
-  display: flex;
-  gap: 18px;
-  align-items: flex-start;
-  margin-bottom: 45px;
-}
-
-.statistics-section-heading > span {
-  color: var(--color-accent);
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  padding-top: 6px;
 }
 
 .statistics-label {
-  color: var(--color-accent);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.13em;
-  margin-bottom: 7px;
-}
-
-.statistics-section-heading h2 {
-  font-size: clamp(26px, 4vw, 38px);
-  letter-spacing: -0.025em;
-}
-
-/* =========================================
-   KEY METRICS
-   ========================================= */
-
-.statistics-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: var(--color-border-light);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-}
-
-.statistics-metric {
-  background: white;
-  padding: 30px 25px;
-  min-height: 230px;
-  display: flex;
-  flex-direction: column;
-}
-
-.statistics-metric-icon {
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-bg-tertiary);
-  border-radius: var(--radius-md);
-  margin-bottom: 24px;
-  color: var(--color-primary);
-}
-
-.statistics-metric strong {
-  font-size: 34px;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  margin-bottom: 13px;
-}
-
-.statistics-metric > span {
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  line-height: 1.55;
-}
-
-.statistics-metric small {
-  display: block;
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
   color: var(--color-text-tertiary);
-  font-size: 11px;
-  margin-top: 5px;
+  letter-spacing: 0.05em;
 }
 
-/* =========================================
-   BAR CHART
-   ========================================= */
-
-.statistics-chart-card {
-  background: white;
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-xl);
-  padding: 32px;
+.statistics-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
 }
 
-.statistics-chart-header {
+.statistics-metric-card {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 40px;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
 }
 
-.statistics-chart-header h3 {
-  font-size: 18px;
-  margin-bottom: 5px;
-}
-
-.statistics-chart-header p {
-  color: var(--color-text-tertiary);
-  font-size: 13px;
-}
-
-.statistics-source-tag {
-  padding: 6px 10px;
-  background: var(--color-bg-tertiary);
-  color: var(--color-text-secondary);
-  border-radius: var(--radius-sm);
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.statistics-bars {
+.metric-info {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 2px;
 }
 
-.statistics-bar-row {
-  display: grid;
-  grid-template-columns: 190px 1fr 55px;
-  align-items: center;
-  gap: 18px;
+.metric-info strong {
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  line-height: 1.2;
 }
 
-.statistics-bar-label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.statistics-bar-number {
-  color: var(--color-text-placeholder);
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.statistics-bar-icon {
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-bg-tertiary);
-  border-radius: 6px;
+.metric-info span {
+  font-size: var(--text-xs);
   color: var(--color-text-secondary);
 }
 
-.statistics-bar-label strong {
-  font-size: 13px;
+.statistics-chart-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
-.statistics-bar-track {
-  height: 12px;
-  background: var(--color-bg-tertiary);
-  border-radius: 999px;
+.statistics-section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border-light);
+  padding-bottom: var(--space-2);
+}
+
+.hazard-bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.hazard-bar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.hazard-name {
+  width: 80px;
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+}
+
+.hazard-bar-container {
+  flex: 1;
+  height: 6px;
+  background: var(--color-border-light);
+  border-radius: var(--radius-full);
   overflow: hidden;
 }
 
-.statistics-bar-fill {
+.hazard-bar {
   height: 100%;
   background: var(--color-primary);
-  border-radius: 999px;
-  animation: statisticsBarGrow 900ms ease-out;
+  border-radius: var(--radius-full);
 }
 
-.statistics-bar-value {
+.hazard-value {
+  width: 32px;
   text-align: right;
-  font-size: 14px;
-}
-
-@keyframes statisticsBarGrow {
-  from {
-    width: 0 !important;
-  }
-}
-
-/* =========================================
-   DEATH DISTRIBUTION
-   ========================================= */
-
-.statistics-death-layout {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: 50px;
-  align-items: center;
-}
-
-.statistics-death-card {
-  min-height: 300px;
-  padding: 35px;
-  background: var(--color-bg-dark);
-  color: white;
-  border-radius: var(--radius-xl);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.statistics-death-circle {
-  width: 170px;
-  height: 170px;
-  border-radius: 50%;
-  border: 12px solid #334155;
-  border-top-color: var(--color-critical);
-  border-right-color: var(--color-critical);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 25px;
-}
-
-.statistics-death-circle strong {
-  font-size: 38px;
-}
-
-.statistics-death-circle span {
-  color: #94a3b8;
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  font-weight: 700;
-}
-
-.statistics-death-card p {
-  max-width: 440px;
-  color: #cbd5e1;
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.statistics-death-list {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-
-.statistics-death-item-top {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 9px;
-}
-
-.statistics-death-item-top span {
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.statistics-death-item-top strong {
-  font-size: 14px;
-}
-
-.statistics-death-track {
-  height: 10px;
-  background: var(--color-bg-tertiary);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.statistics-death-fill {
-  height: 100%;
-  background: var(--color-critical);
-  border-radius: 999px;
-}
-
-/* =========================================
-   RECENT EVENTS
-   ========================================= */
-
-.statistics-dark-section {
-  background: var(--color-bg-dark);
-  color: white;
-}
-
-.statistics-heading-dark h2 {
-  color: white;
-}
-
-.statistics-heading-dark .statistics-label {
-  color: #60a5fa;
-}
-
-.statistics-heading-dark > span {
-  color: #60a5fa;
-}
-
-.statistics-events {
-  border-top: 1px solid #334155;
-}
-
-.statistics-event {
-  display: grid;
-  grid-template-columns: 100px 1fr 160px 220px;
-  align-items: center;
-  gap: 25px;
-  padding: 25px 0;
-  border-bottom: 1px solid #334155;
-}
-
-.statistics-event-year {
-  color: #64748b;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.statistics-event-main h3 {
-  font-size: 17px;
-  margin-bottom: 4px;
-}
-
-.statistics-event-main span,
-.statistics-event-stat span {
-  color: #64748b;
-  font-size: 11px;
-}
-
-.statistics-event-stat {
-  display: flex;
-  flex-direction: column;
-}
-
-.statistics-event-stat strong {
-  font-size: 18px;
-}
-
-/* =========================================
-   EVACUATION COMPARISON
-   ========================================= */
-
-.statistics-comparison {
-  display: grid;
-  grid-template-columns: 1fr 180px 1fr;
-  align-items: center;
-  gap: 30px;
-  padding: 45px;
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-xl);
-}
-
-.statistics-comparison-side {
-  text-align: center;
-}
-
-.statistics-comparison-side > span {
-  display: block;
-  color: var(--color-text-tertiary);
-  font-size: 13px;
-  margin-bottom: 12px;
-}
-
-.statistics-comparison-side strong {
-  display: block;
-  font-size: 52px;
-  letter-spacing: -0.05em;
-  margin-bottom: 10px;
-}
-
-.statistics-comparison-side p {
-  color: var(--color-text-secondary);
-  font-size: 13px;
-}
-
-.statistics-comparison-arrow {
-  text-align: center;
-  color: var(--color-critical);
-}
-
-.statistics-comparison-arrow strong {
-  display: block;
-  font-size: 28px;
-  margin-top: 7px;
-}
-
-.statistics-comparison-arrow span {
-  color: var(--color-text-tertiary);
-  font-size: 11px;
-}
-
-.statistics-comparison-highlight strong {
-  color: var(--color-active);
-}
-
-.statistics-evidence {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  margin-top: 20px;
-  padding: 18px;
-  background: var(--color-bg-secondary);
-  border-radius: var(--radius-md);
-  color: var(--color-text-secondary);
-}
-
-.statistics-evidence svg {
-  color: var(--color-active);
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.statistics-evidence p {
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-/* =========================================
-   MODEL SECTION
-   ========================================= */
-
-.statistics-model-section {
-  background: #f8fafc;
-}
-
-.statistics-model-intro {
-  max-width: 800px;
-  margin-bottom: 30px;
-}
-
-.statistics-model-intro p {
-  color: var(--color-text-secondary);
-  line-height: 1.7;
-  font-size: 14px;
-}
-
-.statistics-model-table {
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  background: white;
-}
-
-.statistics-model-row {
-  display: grid;
-  grid-template-columns: 1.4fr repeat(4, 1fr);
-  align-items: center;
-  min-height: 70px;
-  border-bottom: 1px solid var(--color-border-light);
-}
-
-.statistics-model-row:last-child {
-  border-bottom: none;
-}
-
-.statistics-model-row > span,
-.statistics-model-row > strong {
-  padding: 15px 20px;
-  font-size: 14px;
-}
-
-.statistics-model-header {
-  background: var(--color-bg-dark);
-  color: white;
-  min-height: 55px;
-}
-
-.statistics-model-header span {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #94a3b8;
-}
-
-.statistics-model-row > strong {
-  color: var(--color-active);
-}
-
-.statistics-model-row small {
-  display: block;
-  color: var(--color-text-tertiary);
-  font-size: 10px;
-  margin-top: 3px;
-}
-
-/* =========================================
-   SOURCE
-   ========================================= */
-
-.statistics-source-section {
-  background: var(--color-bg-secondary);
-  border-top: 1px solid var(--color-border-light);
-  padding: 45px 0;
-}
-
-.statistics-source {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 50px;
-  align-items: start;
-}
-
-.statistics-source h3 {
-  font-size: 20px;
-}
-
-.statistics-source > p {
-  color: var(--color-text-tertiary);
-  font-size: 12px;
-  line-height: 1.7;
-}
-
-/* =========================================
-   RESPONSIVE
-   ========================================= */
-
-@media (max-width: 1023px) {
-  .statistics-metrics {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .statistics-death-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .statistics-event {
-    grid-template-columns: 80px 1fr 130px 160px;
-  }
-}
-
-@media (max-width: 767px) {
-  .statistics-hero {
-    padding: 65px 0;
-  }
-
-  .statistics-section {
-    padding: 60px 0;
-  }
-
-  .statistics-metrics {
-    grid-template-columns: 1fr;
-  }
-
-  .statistics-chart-card {
-    padding: 20px;
-  }
-
-  .statistics-chart-header {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .statistics-bar-row {
-    grid-template-columns: 1fr 50px;
-    gap: 8px;
-  }
-
-  .statistics-bar-label {
-    grid-column: 1 / -1;
-  }
-
-  .statistics-bar-track {
-    grid-column: 1;
-  }
-
-  .statistics-bar-value {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  .statistics-event {
-    grid-template-columns: 55px 1fr;
-    gap: 15px;
-  }
-
-  .statistics-event-stat {
-    grid-column: 2;
-  }
-
-  .statistics-comparison {
-    grid-template-columns: 1fr;
-    padding: 30px 20px;
-  }
-
-  .statistics-comparison-arrow {
-    transform: rotate(90deg);
-  }
-
-  .statistics-model-table {
-    overflow-x: auto;
-  }
-
-  .statistics-model-row {
-    min-width: 650px;
-  }
-
-  .statistics-source {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
 }

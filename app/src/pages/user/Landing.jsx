@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Clock, Shield, Zap, MapPin, Upload, Brain } from 'lucide-react';
 import Navbar from '../../components/common/Navbar';
+import Statistics from './Statistics';
 import './Landing.css';
 
 /**
@@ -15,49 +16,55 @@ export default function Landing() {
       {/* ── Hero Section ── */}
       <section className="landing-hero">
         <div className="container">
-          <div className="landing-hero-content">
-            <div className="landing-hero-label">
-              <span className="landing-hero-dot" />
-              AI-Powered Emergency Response
+          <div className="landing-hero-grid">
+            <div className="landing-hero-content">
+              <div className="landing-hero-label">
+                <span className="landing-hero-dot" />
+                AI-Powered Emergency Response
+              </div>
+
+              <h1 className="landing-hero-title">
+                Report emergencies.<br />
+                Save lives faster.
+              </h1>
+
+              <p className="landing-hero-description">
+                Our AI-powered platform connects citizens with emergency responders in real time.
+                Upload a photo, describe the situation, and share your location — our system
+                analyzes the severity and routes help where it's needed most.
+              </p>
+
+              <div className="landing-hero-actions">
+                <Link to="/report" className="landing-hero-cta">
+                  Report an Emergency
+                  <ArrowRight size={18} />
+                </Link>
+                <a href="#how-it-works" className="landing-hero-secondary">
+                  How it works
+                </a>
+              </div>
+
+              {/* Quick stats */}
+              <div className="landing-hero-stats">
+                <div className="landing-hero-stat">
+                  <span className="landing-hero-stat-value">{'<'}8 min</span>
+                  <span className="landing-hero-stat-label">Avg. response time</span>
+                </div>
+                <div className="landing-hero-stat-divider" />
+                <div className="landing-hero-stat">
+                  <span className="landing-hero-stat-value">94%</span>
+                  <span className="landing-hero-stat-label">AI accuracy</span>
+                </div>
+                <div className="landing-hero-stat-divider" />
+                <div className="landing-hero-stat">
+                  <span className="landing-hero-stat-value">24/7</span>
+                  <span className="landing-hero-stat-label">Active monitoring</span>
+                </div>
+              </div>
             </div>
-
-            <h1 className="landing-hero-title">
-              Report emergencies.<br />
-              Save lives faster.
-            </h1>
-
-            <p className="landing-hero-description">
-              Our AI-powered platform connects citizens with emergency responders in real time.
-              Upload a photo, describe the situation, and share your location — our system
-              analyzes the severity and routes help where it's needed most.
-            </p>
-
-            <div className="landing-hero-actions">
-              <Link to="/report" className="landing-hero-cta">
-                Report an Emergency
-                <ArrowRight size={18} />
-              </Link>
-              <a href="#how-it-works" className="landing-hero-secondary">
-                How it works
-              </a>
-            </div>
-
-            {/* Quick stats */}
-            <div className="landing-hero-stats">
-              <div className="landing-hero-stat">
-                <span className="landing-hero-stat-value">{'<'}8 min</span>
-                <span className="landing-hero-stat-label">Avg. response time</span>
-              </div>
-              <div className="landing-hero-stat-divider" />
-              <div className="landing-hero-stat">
-                <span className="landing-hero-stat-value">94%</span>
-                <span className="landing-hero-stat-label">AI accuracy</span>
-              </div>
-              <div className="landing-hero-stat-divider" />
-              <div className="landing-hero-stat">
-                <span className="landing-hero-stat-value">24/7</span>
-                <span className="landing-hero-stat-label">Active monitoring</span>
-              </div>
+            
+            <div className="landing-hero-stats-panel">
+              <Statistics />
             </div>
           </div>
         </div>
