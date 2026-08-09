@@ -14,8 +14,10 @@ import './Login.css';
  */
 export default function Login() {
   const navigate = useNavigate();
-  const { login, isLoading, error, clearError } = useAuth();
+  const { login, signup, isLoading, error, clearError } = useAuth();
 
+  const [isLogin, setIsLogin] = useState(true);
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -24,7 +26,13 @@ export default function Login() {
     event.preventDefault();
     clearError();
 
-    const success = await login(email, password);
+    let success;
+    if (isLogin) {
+      success = await login(email, password);
+    } else {
+      success = await signup(email, password, name);
+    }
+    
     if (success) {
       navigate('/authority/dashboard');
     }
@@ -53,8 +61,26 @@ export default function Login() {
             </div>
           )}
 
+          {/* Name - only for signup */}
+          {!isLogin && (
+            <div className="login-field animate-fade-in">
+              <label className="login-label" htmlFor="login-name">
+                Full Name
+              </label>
+              <input
+                id="login-name"
+                type="text"
+                className="login-input"
+                placeholder="Officer Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required={!isLogin}
+              />
+            </div>
+          )}
+
           {/* Email */}
-          <div className="login-field">
+          <div className="login-field animate-fade-in">
             <label className="login-label" htmlFor="login-email">
               Email Address
             </label>
@@ -102,8 +128,25 @@ export default function Login() {
             className="login-submit"
             disabled={isLoading}
           >
-            {isLoading ? 'Signing in…' : 'Sign In'}
+            {isLoading ? (isLogin ? 'Signing in…' : 'Creating account…') : (isLogin ? 'Sign In' : 'Create Account')}
           </button>
+          
+          {/* Toggle Mode */}
+          <div className="login-footer">
+            <p className="login-footer-text">
+              {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
+              <button 
+                type="button" 
+                className="login-footer-link"
+                onClick={() => {
+                  setIsLogin(!isLogin);
+                  clearError();
+                }}
+              >
+                {isLogin ? "Create one" : "Sign in"}
+              </button>
+            </p>
+          </div>
 
         </form>
       </div>

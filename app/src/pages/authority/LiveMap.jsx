@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
 import Sidebar from '../../components/common/Sidebar';
 import MobileNav from '../../components/common/MobileNav';
@@ -101,6 +101,9 @@ export default function LiveMap() {
                 position={[incident.location.lat, incident.location.lng]}
                 icon={createMarkerIcon(incident.severity)}
               >
+                <Tooltip direction="top" offset={[0, -14]} opacity={1}>
+                  <strong style={{ fontSize: '12px' }}>{incident.location.address}</strong>
+                </Tooltip>
                 <Popup>
                   <div className="map-popup">
                     <div className="map-popup-header">

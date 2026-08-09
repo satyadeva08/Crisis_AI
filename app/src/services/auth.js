@@ -8,7 +8,7 @@ import { supabase } from './supabase';
  * and it will use supabase.auth.signInWithPassword().
  */
 
-const USE_MOCK = true;
+const USE_MOCK = false;
 const delay = (ms = 500) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Mock credentials for demo
@@ -60,6 +60,31 @@ export const authService = {
     localStorage.setItem('auth_token', data.session.access_token);
     localStorage.setItem('auth_user', JSON.stringify(user));
     return { token: data.session.access_token, user };
+  },
+
+  /**
+   * Sign up a new officer.
+   */
+  async signup(email, password, name) {
+    if (USE_MOCK) {
+      throw new Error('Signup not supported in mock mode');
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name: name || 'Authority User',
+        }
+      }
+    });
+
+    if (error) throw new Error(error.message);
+
+    // If email confirmation is off, this will log them in immediately.
+    // If it's on, they'll need to confirm email first (default Supabase behavior).
+    return data;
   },
 
   /**

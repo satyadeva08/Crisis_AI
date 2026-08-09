@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { mockIncidents, dashboardStats, recentAlerts } from '../data/mockIncidents';
+// Mock data removed — strictly using real database now
 
 /**
  * Incident service — queries Supabase for incident data.
@@ -111,12 +111,12 @@ export const incidentService = {
       const { data, error } = await query;
 
       if (error) throw error;
-      if (!data || data.length === 0) return mockIncidents; // Fallback
+      if (!data) return []; 
 
       return data.map(transformIncident);
     } catch (err) {
-      console.warn('Supabase getAll failed, using mock data:', err.message);
-      return mockIncidents;
+      console.warn('Supabase getAll failed:', err.message);
+      return [];
     }
   },
 
@@ -140,10 +140,7 @@ export const incidentService = {
       if (error) throw error;
       return transformIncident(data);
     } catch (err) {
-      console.warn('Supabase getById failed, using mock data:', err.message);
-      // Fallback: search mock data
-      const mock = mockIncidents.find((i) => i.id === id);
-      if (mock) return mock;
+      console.warn('Supabase getById failed:', err.message);
       throw new Error('Incident not found');
     }
   },
@@ -204,12 +201,7 @@ export const incidentService = {
       };
     } catch (err) {
       console.error('Supabase create failed:', err.message);
-      // Fallback: return a mock response
-      return {
-        id: `INC-${Date.now()}`,
-        status: 'active',
-        severity: 'high',
-      };
+      throw new Error('Failed to create incident report');
     }
   },
 
@@ -243,7 +235,14 @@ export const incidentService = {
         .select('severity_level, status');
 
       if (error) throw error;
-      if (!incidents || incidents.length === 0) return dashboardStats;
+      
+      const emptyStats = {
+        total: 0, critical: 0, high: 0, medium: 0, low: 0,
+        active: 0, inProgress: 0, resolved: 0,
+        avgResponseTime: '0 min', teamsDeployed: 0,
+      };
+      
+      if (!incidents || incidents.length === 0) return emptyStats;
 
       const total = incidents.length;
       const critical = incidents.filter((i) => i.severity_level === 'critical').length;
@@ -267,8 +266,12 @@ export const incidentService = {
         teamsDeployed: Math.max(active + inProgress, 1),
       };
     } catch (err) {
-      console.warn('Supabase getStats failed, using mock:', err.message);
-      return dashboardStats;
+      console.warn('Supabase getStats failed:', err.message);
+      return {
+        total: 0, critical: 0, high: 0, medium: 0, low: 0,
+        active: 0, inProgress: 0, resolved: 0,
+        avgResponseTime: '0 min', teamsDeployed: 0,
+      };
     }
   },
 
@@ -285,7 +288,7 @@ export const incidentService = {
         .limit(10);
 
       if (error) throw error;
-      if (!data || data.length === 0) return recentAlerts;
+      if (!data) return [];
 
       return data.map((alert) => ({
         id: alert.alert_id,
@@ -294,8 +297,8 @@ export const incidentService = {
         time: formatTimeAgo(alert.created_at),
       }));
     } catch (err) {
-      console.warn('Supabase getAlerts failed, using mock:', err.message);
-      return recentAlerts;
+      console.warn('Supabase getAlerts failed:', err.message);
+      return [];
     }
   },
 };

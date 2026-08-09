@@ -42,6 +42,20 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  const signup = useCallback(async (email, password, name) => {
+    dispatch({ type: 'LOGIN_START' });
+    try {
+      await authService.signup(email, password, name);
+      // Automatically log them in after sign up
+      const { user } = await authService.login(email, password);
+      dispatch({ type: 'LOGIN_SUCCESS', payload: user });
+      return true;
+    } catch (err) {
+      dispatch({ type: 'LOGIN_ERROR', payload: err.message });
+      return false;
+    }
+  }, []);
+
   const logout = useCallback(() => {
     authService.logout();
     dispatch({ type: 'LOGOUT' });
@@ -52,7 +66,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...state, login, logout, clearError }}>
+    <AuthContext.Provider value={{ ...state, login, signup, logout, clearError }}>
       {children}
     </AuthContext.Provider>
   );
