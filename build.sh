@@ -9,4 +9,4 @@ npm run build
 cd ..
 
 # Install Python backend dependencies
-pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
