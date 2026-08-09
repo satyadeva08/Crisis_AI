@@ -232,7 +232,7 @@ export const incidentService = {
     try {
       const { data: incidents, error } = await supabase
         .from('incidents')
-        .select('severity_level, status');
+        .select('severity_level, status, reported_at, updated_at');
 
       if (error) throw error;
       
@@ -253,6 +253,33 @@ export const incidentService = {
       const inProgress = incidents.filter((i) => i.status === 'in-progress' || i.status === 'processing').length;
       const resolved = incidents.filter((i) => i.status === 'resolved' || i.status === 'closed').length;
 
+      // Calculate average response time for incidents that have been updated
+      let totalMins = 0;
+      let respondedCount = 0;
+      incidents.forEach(inc => {
+        if (inc.status !== 'reported' && inc.updated_at && inc.reported_at) {
+          const diffMs = new Date(inc.updated_at).getTime() - new Date(inc.reported_at).getTime();
+          const diffMins = Math.floor(diffMs / 60000);
+          if (diffMins > 0) {
+            totalMins += diffMins;
+            respondedCount++;
+          }
+        }
+      });
+      const avgResponseTime = respondedCount > 0 ? `${Math.round(totalMins / respondedCount)} min` : 'N/A';
+
+      // Query real deployed teams from resources table
+      let teamsDeployed = 0;
+      try {
+        const { data: resources, error: resError } = await supabase
+          .from('resources')
+          .select('resource_id')
+          .eq('status', 'deployed');
+        if (resources) teamsDeployed = resources.length;
+      } catch (e) {
+        console.warn('Could not fetch resources:', e.message);
+      }
+
       return {
         total,
         critical,
@@ -262,8 +289,8 @@ export const incidentService = {
         active,
         inProgress,
         resolved,
-        avgResponseTime: '8 min',
-        teamsDeployed: Math.max(active + inProgress, 1),
+        avgResponseTime,
+        teamsDeployed,
       };
     } catch (err) {
       console.warn('Supabase getStats failed:', err.message);
