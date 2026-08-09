@@ -9,7 +9,7 @@ from services.data_processing import process_emergency_data
 from services.rag_service import rag_service
 from services.granite_ai import granite_service
 from services.gemini_vision import gemini_vision_service
-from services.supabase_client import supabase
+from services.supabase_client import supabase, supabase_init_error
 
 app = Flask(__name__, static_folder='app/dist', static_url_path='/')
 CORS(app)
@@ -275,7 +275,7 @@ def create_emergency_report():
     else:
         return jsonify({
             "success": False,
-            "error": "Database Error: Supabase client is not connected. Check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY."
+            "error": f"Database Error: {supabase_init_error or 'Supabase client is not connected.'}"
         }), 500
 
     report["image_url"] = public_image_url
