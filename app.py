@@ -227,10 +227,7 @@ def create_emergency_report():
                 "status": "reported",
                 "severity_level": severity,
                 "latitude": processed_data["location"]["latitude"],
-                "longitude": processed_data["location"]["longitude"],
-                "reported_by": contact_name,
-                "contact_name": contact_name,
-                "contact_phone": contact_phone
+                "longitude": processed_data["location"]["longitude"]
             }).execute()
 
             # 3. Insert Text Report
@@ -257,13 +254,6 @@ def create_emergency_report():
                 "assessed_severity": severity,
                 "reasoning": ai_result.get("reasoning", "AI completed assessment based on provided details."),
                 "model_name": "ibm/granite-4-h-small"
-            }).execute()
-
-            # 6. Insert initial timeline entry
-            supabase.table("incident_updates").insert({
-                "incident_id": incident_id,
-                "update_text": f"Incident verified by ResQ AI Backend. Assessed severity: {severity.upper()}.",
-                "update_time": datetime.now().strftime("%I:%M %p")
             }).execute()
 
         except Exception as db_err:
