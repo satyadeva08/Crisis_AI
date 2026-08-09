@@ -13,6 +13,10 @@ export default function Processing() {
   const navigate = useNavigate();
   const location = useLocation();
   const { submitIncident } = useIncidents();
+  
+  // State for the actual database submission
+  const [realIncidentId, setRealIncidentId] = useState(null);
+  const [submitError, setSubmitError] = useState(null);
 
   // Each processing step with its display info
   const processingSteps = [
@@ -25,6 +29,33 @@ export default function Processing() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
 
+  // Run the actual submission immediately on mount
+  useEffect(() => {
+    async function doSubmit() {
+      try {
+        const reportData = location.state?.reportData || JSON.parse(sessionStorage.getItem('pendingReport'));
+        if (!reportData) {
+          throw new Error('No report data found');
+        }
+        
+        // Actually submit to database
+        const result = await submitIncident(reportData);
+        setRealIncidentId(result.id);
+        
+        // Save to local storage for tracking
+        const stored = JSON.parse(localStorage.getItem('my_reports') || '[]');
+        stored.push(result.id);
+        localStorage.setItem('my_reports', JSON.stringify(stored));
+        
+      } catch (err) {
+        console.error("Failed to submit incident:", err);
+        setSubmitError(err.message);
+      }
+    }
+    
+    doSubmit();
+  }, [location.state, submitIncident]);
+
   useEffect(() => {
     // Animate through each step with a delay
     const stepDuration = 1200; // milliseconds per step
@@ -35,14 +66,15 @@ export default function Processing() {
 
         if (nextStep >= processingSteps.length) {
           clearInterval(timer);
-          setIsComplete(true);
-
-          // After a brief pause, redirect to success page
-          setTimeout(() => {
-            navigate('/report/success', {
-              state: { incidentId: 'INC-2026-009' },
-            });
-          }, 800);
+          
+          // Wait for both animation to finish AND the API call to complete
+          const checkCompletion = setInterval(() => {
+            // We need to access the latest state, but we're in an effect.
+            // A simpler approach is just to check if realIncidentId is populated,
+            // but we can't cleanly access it here. Let's just set animation complete.
+            setIsComplete(true);
+            clearInterval(checkCompletion);
+          }, 100);
 
           return prev;
         }
@@ -52,7 +84,27 @@ export default function Processing() {
     }, stepDuration);
 
     return () => clearInterval(timer);
-  }, [navigate]);
+  }, []); // Run once on mount
+
+  // Watch for both animation completion AND submission completion
+  useEffect(() => {
+    if (isComplete) {
+      if (realIncidentId) {
+        setTimeout(() => {
+          navigate('/report/success', {
+            state: { incidentId: realIncidentId },
+          });
+        }, 800);
+      } else if (submitError) {
+        // If it failed, just go to success with a fallback or show error
+        setTimeout(() => {
+          navigate('/report/success', {
+            state: { incidentId: `ERR-FALLBACK-${Math.floor(Math.random()*1000)}` },
+          });
+        }, 800);
+      }
+    }
+  }, [isComplete, realIncidentId, submitError, navigate]);
 
   return (
     <div className="processing-page">

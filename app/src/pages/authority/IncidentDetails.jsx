@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   ArrowLeft, MapPin, Clock, User, FileText,
-  AlertTriangle, Activity
+  AlertTriangle, Activity, CheckCircle, Navigation
 } from 'lucide-react';
 import Sidebar from '../../components/common/Sidebar';
 import MobileNav from '../../components/common/MobileNav';
@@ -19,7 +19,20 @@ import './IncidentDetails.css';
  */
 export default function IncidentDetails() {
   const { id } = useParams();
-  const { selectedIncident: incident, isLoading, fetchIncident } = useIncidents();
+  const { selectedIncident: incident, isLoading, fetchIncident, updateStatus } = useIncidents();
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  async function handleStatusChange(newStatus) {
+    if (incident.status === newStatus || isUpdating) return;
+    setIsUpdating(true);
+    try {
+      await updateStatus(incident.id, newStatus);
+    } catch (err) {
+      console.error("Failed to update status", err);
+    } finally {
+      setIsUpdating(false);
+    }
+  }
 
   useEffect(() => {
     if (id) fetchIncident(id);
@@ -56,6 +69,29 @@ export default function IncidentDetails() {
                 <Badge type="status" value={incident.status} />
               </div>
               <h1 className="details-title">{incident.title}</h1>
+            </div>
+            
+            <div className="details-header-actions">
+              {incident.status === 'active' && (
+                <button 
+                  className="details-action-btn primary"
+                  onClick={() => handleStatusChange('in-progress')}
+                  disabled={isUpdating}
+                >
+                  <Navigation size={16} />
+                  Deploy Team
+                </button>
+              )}
+              {incident.status === 'in-progress' && (
+                <button 
+                  className="details-action-btn success"
+                  onClick={() => handleStatusChange('resolved')}
+                  disabled={isUpdating}
+                >
+                  <CheckCircle size={16} />
+                  Mark Resolved
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -92,6 +92,19 @@ export function IncidentProvider({ children }) {
     }
   }, []);
 
+  const updateStatus = useCallback(async (id, status) => {
+    dispatch({ type: 'SET_LOADING' });
+    try {
+      const result = await incidentService.updateStatus(id, status);
+      // Re-fetch incident to update local state completely
+      await fetchIncident(id);
+      return result;
+    } catch (err) {
+      dispatch({ type: 'SET_ERROR', payload: err.message });
+      throw err;
+    }
+  }, [fetchIncident]);
+
   return (
     <IncidentContext.Provider
       value={{
@@ -102,6 +115,7 @@ export function IncidentProvider({ children }) {
         fetchAlerts,
         setFilters,
         submitIncident,
+        updateStatus,
       }}
     >
       {children}

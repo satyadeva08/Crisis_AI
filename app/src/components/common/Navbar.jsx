@@ -13,6 +13,7 @@ export default function Navbar({ variant = 'user' }) {
     ? [
         { path: '/', label: 'Home' },
         { path: '/report', label: 'Report Emergency' },
+        { path: '/report/track', label: 'Track Status' },
       ]
     : [];
 

@@ -76,13 +76,13 @@ export default function Success() {
 
             {/* Actions */}
             <div className="success-actions">
-              <Link to="/" className="success-action-primary">
+              <Link to="/report/track" className="success-action-primary">
+                <CheckCircle2 size={16} />
+                Track Status
+              </Link>
+              <Link to="/" className="success-action-secondary">
                 <Home size={16} />
                 Return Home
-              </Link>
-              <Link to="/report" className="success-action-secondary">
-                Submit Another Report
-                <ArrowRight size={16} />
               </Link>
             </div>
           </div>

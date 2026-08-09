@@ -7,6 +7,7 @@ import Landing from './pages/user/Landing';
 import ReportEmergency from './pages/user/ReportEmergency';
 import Processing from './pages/user/Processing';
 import Success from './pages/user/Success';
+import TrackStatus from './pages/user/TrackStatus';
 
 // Authority pages
 import Login from './pages/authority/Login';
@@ -41,6 +42,7 @@ function AppRoutes() {
       <Route path="/report" element={<ReportEmergency />} />
       <Route path="/report/processing" element={<Processing />} />
       <Route path="/report/success" element={<Success />} />
+      <Route path="/report/track" element={<TrackStatus />} />
 
       {/* ── Authority Side ── */}
       <Route path="/authority/login" element={<Login />} />
