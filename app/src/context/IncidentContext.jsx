@@ -1,5 +1,6 @@
-import { createContext, useContext, useReducer, useCallback } from 'react';
+import { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
 import { incidentService } from '../services/incidents';
+import { supabase } from '../services/supabase';
 
 const IncidentContext = createContext(null);
 
@@ -67,6 +68,30 @@ export function IncidentProvider({ children }) {
       console.error('Failed to fetch stats:', err);
     }
   }, []);
+
+  // Setup Supabase Realtime Subscription for automatic updates
+  useEffect(() => {
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'incidents',
+        },
+        (payload) => {
+          // When an incident changes, re-fetch all data to ensure dashboard stays up to date
+          fetchIncidents(state.filters);
+          fetchStats();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchIncidents, fetchStats, state.filters]);
 
   const fetchAlerts = useCallback(async () => {
     try {
