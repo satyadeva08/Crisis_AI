@@ -1,7 +1,5 @@
 FLOOD SAFETY AND RESCUE
-
 Floods can cause drowning, electrical hazards, structural damage, contaminated water, blocked roads, and vehicle entrapment.
-
 Immediate flood safety actions:
 - Move affected people to higher and safer ground.
 - Do not walk through moving flood water.
@@ -14,37 +12,8 @@ Immediate flood safety actions:
 - Provide medical assistance to injured or exposed victims.
 - Avoid entering damaged buildings until they are assessed for structural safety.
 
-Flood rescue resources:
-- Rescue boats
-- Trained rescue personnel
-- Medical teams
-- First-aid kits
-- Life jackets
-- Ropes and rescue equipment
-- Emergency communication equipment
-- Transportation for evacuation
-
-Flood severity indicators:
-- Rapidly rising water
-- People trapped inside buildings
-- Submerged vehicles
-- People requiring medical assistance
-- Roads becoming inaccessible
-- Electrical hazards
-- Structural damage
-- Large numbers of affected people
-
-If people are trapped inside houses or vehicles:
-- Treat the incident as high priority.
-- Deploy appropriate rescue personnel and equipment.
-- Use boats when road access is unavailable.
-- Move rescued people to safe elevated locations.
-- Provide medical assessment after rescue.
-
 EARTHQUAKE SAFETY
-
 Earthquakes can cause building collapse, falling objects, fires, damaged utilities, injuries, and people becoming trapped.
-
 Immediate earthquake safety actions:
 - Move away from damaged structures.
 - Protect yourself from falling objects.
@@ -54,18 +23,8 @@ Immediate earthquake safety actions:
 - Deploy search and rescue teams.
 - Provide medical assistance to injured people.
 
-Earthquake rescue resources:
-- Search and rescue teams
-- Medical teams
-- First-aid equipment
-- Rescue tools
-- Communication equipment
-- Structural assessment teams
-
-CYCLONE SAFETY
-
+CYCLONE AND WINDSTORM SAFETY
 Cyclones can cause strong winds, flooding, structural damage, fallen trees, power failures, and injuries.
-
 Immediate cyclone safety actions:
 - Move people to designated shelters or safe buildings.
 - Keep people away from windows and damaged structures.
@@ -74,18 +33,8 @@ Immediate cyclone safety actions:
 - Deploy rescue teams after dangerous conditions are assessed.
 - Prioritize injured and vulnerable people.
 
-Cyclone rescue resources:
-- Emergency shelters
-- Rescue teams
-- Medical teams
-- Emergency communication equipment
-- Transportation
-- First-aid supplies
-
 LANDSLIDE SAFETY
-
 Landslides can bury roads, buildings, and people and can cause secondary landslides.
-
 Immediate landslide safety actions:
 - Keep people away from unstable slopes.
 - Evacuate areas at risk of additional movement.
@@ -94,9 +43,35 @@ Immediate landslide safety actions:
 - Avoid entering unstable structures.
 - Establish safe access routes.
 
-Landslide rescue resources:
-- Search and rescue teams
-- Medical teams
-- Excavation equipment
-- Communication equipment
-- Transportation
+NIGHT-TIME RESCUE OPERATIONS (TIME ESCALATION)
+Rescue operations conducted at night or in extremely low-visibility conditions are inherently more dangerous and slower.
+Immediate night-time actions:
+- Deploy portable heavy lighting equipment, thermal imaging cameras, and night-vision drones.
+- Do not deploy un-tethered rescue personnel in fast-moving water or highly unstable terrain at night.
+- Maintain continuous radio contact with all deployed teams.
+- Mark safe zones with highly visible reflective markers or strobe lights.
+- Automatically escalate severity due to visibility hazards and delayed response capabilities.
+
+URBAN DISASTER OPERATIONS (CITY/DENSE LOCALITY)
+Disasters in densely populated urban areas involve high risks of mass casualties, stampedes, and cascading infrastructure failure.
+Immediate urban actions:
+- Prioritize high-rise building evacuation and rapid structural assessment.
+- Anticipate severe traffic blockages; deploy helicopters, drones, or motorcycles for rapid medical access.
+- Secure broken underground gas mains and high-voltage power grids immediately to prevent secondary fires or explosions.
+- Set up localized triage centers outside the immediate collapse zone.
+
+RURAL AND REMOTE DISASTER OPERATIONS (ISOLATED LOCALITY)
+Disasters in rural, mountainous, or remote localities often suffer from significantly delayed response times and lack of local medical infrastructure.
+Immediate rural actions:
+- Deploy off-road vehicles (ATVs), air-lift helicopters, and heavy debris-clearing equipment.
+- Establish satellite or offline radio communications, as cellular networks are highly vulnerable in isolated areas.
+- Advise affected populations to move to pre-identified high ground or community shelters rather than wait for immediate extraction.
+- Deploy self-sustaining medical response teams with bulk supplies.
+
+INDUSTRIAL AND CHEMICAL HAZARD OPERATIONS
+When disasters strike factories, warehouses, or industrial zones, the risk of toxic exposure is extreme.
+Immediate chemical actions:
+- Establish an exclusion zone and evacuate everyone downwind of the incident.
+- Rescue personnel must wear Level A HAZMAT suits.
+- Identify the specific chemicals involved before applying water, as water can react violently with certain industrial materials.
+- Treat toxic gas leaks or chemical fires as Critical Severity immediately.
