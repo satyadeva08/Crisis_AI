@@ -1,6 +1,8 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Map, BarChart3, LogOut } from 'lucide-react';
+import { LayoutDashboard, Map, BarChart3, LogOut, Settings } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useState } from 'react';
+import AdminSettingsModal from './AdminSettingsModal';
 import './MobileNav.css';
 
 /**
@@ -8,7 +10,10 @@ import './MobileNav.css';
  * Only visible on screens < 768px where the sidebar is hidden.
  */
 export default function MobileNav() {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
+  const [showAdminModal, setShowAdminModal] = useState(false);
+
+  const isAdmin = user?.email === 'admin@disaster-response.gov';
 
   const navItems = [
     { path: '/authority/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -28,10 +33,22 @@ export default function MobileNav() {
           <span>{label}</span>
         </NavLink>
       ))}
+
+      {isAdmin && (
+        <button className="mobile-nav-item" onClick={() => setShowAdminModal(true)}>
+          <Settings size={20} />
+          <span>Admin</span>
+        </button>
+      )}
       <button className="mobile-nav-item mobile-nav-logout" onClick={logout}>
         <LogOut size={20} />
         <span>Exit</span>
       </button>
+
+      <AdminSettingsModal 
+        isOpen={showAdminModal} 
+        onClose={() => setShowAdminModal(false)} 
+      />
     </nav>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Settings, Plus, Trash2, Mail, ShieldCheck, X } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 
@@ -71,7 +72,7 @@ export default function AdminSettingsModal({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="modal-overlay" style={{
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
       backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', 
@@ -166,6 +167,7 @@ export default function AdminSettingsModal({ isOpen, onClose }) {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
