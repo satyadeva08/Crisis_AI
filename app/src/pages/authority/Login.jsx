@@ -46,11 +46,11 @@ export default function Login() {
         {/* Brand */}
         <div className="login-brand">
           <div className="login-brand-icon">
-            <Shield size={22} />
+            <Shield size={24} strokeWidth={2.2} />
           </div>
           <h1 className="login-brand-title">Command Center</h1>
           <p className="login-brand-subtitle">
-            Authority access to the emergency response dashboard
+            {isLogin ? 'Sign in to access emergency operations' : 'Create an authority account'}
           </p>
         </div>
 
@@ -58,7 +58,7 @@ export default function Login() {
         <form className="login-form" onSubmit={handleSubmit}>
           {/* Error message */}
           {error && (
-            <div className="login-error">
+            <div className="login-error animate-fade-in">
               {error}
             </div>
           )}
@@ -73,7 +73,7 @@ export default function Login() {
                 id="login-name"
                 type="text"
                 className="login-input"
-                placeholder="Officer Name"
+                placeholder="Enter your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required={!isLogin}
@@ -94,7 +94,6 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              autoFocus
             />
           </div>
 
@@ -103,14 +102,16 @@ export default function Login() {
               <label className="login-label" htmlFor="login-password" style={{ marginBottom: 0 }}>
                 Password
               </label>
-              <button 
-                type="button" 
-                className="login-footer-link" 
-                style={{ fontSize: 'var(--text-xs)' }}
-                onClick={() => setShowResetModal(true)}
-              >
-                Forgot Password?
-              </button>
+              {isLogin && (
+                <button 
+                  type="button" 
+                  className="login-footer-link" 
+                  style={{ fontSize: 'var(--text-xs)' }}
+                  onClick={() => setShowResetModal(true)}
+                >
+                  Forgot Password?
+                </button>
+              )}
             </div>
             <div className="login-password-wrapper">
               <input
@@ -143,8 +144,8 @@ export default function Login() {
           </button>
           
           {/* Toggle Mode */}
-          <div className="login-footer">
-            <p className="login-footer-text">
+          <div className="login-footer" style={{ marginTop: 'var(--space-4)', textAlign: 'center' }}>
+            <p className="login-footer-text" style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)' }}>
               {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
               <button 
                 type="button" 
