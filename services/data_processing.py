@@ -1,5 +1,6 @@
 import re
 from datetime import datetime
+import requests
 
 
 def clean_text(text):
@@ -39,6 +40,29 @@ def validate_coordinates(latitude, longitude):
     return True, latitude, longitude
 
 
+def reverse_geocode(latitude, longitude):
+    """
+    Convert raw GPS coordinates into a human-readable location address using 
+    OpenStreetMap Nominatim (Free, no API key required).
+    """
+    try:
+        url = f"https://nominatim.openstreetmap.org/reverse?lat={latitude}&lon={longitude}&format=json"
+        headers = {
+            "User-Agent": "ResQAIAssistant/1.0 (Hackathon Emergency App)"
+        }
+        # Add timeout so it doesn't block emergency processing if the service is down
+        response = requests.get(url, headers=headers, timeout=5)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if "display_name" in data:
+                return data["display_name"]
+    except Exception as e:
+        print("Geocoding failed:", str(e))
+        pass
+        
+    return "Unknown Physical Address"
+
 def process_emergency_data(
     description,
     latitude,
@@ -64,12 +88,16 @@ def process_emergency_data(
     if not valid:
         raise ValueError("Invalid latitude or longitude.")
 
+    # Attempt to reverse geocode the coordinates into a physical address
+    physical_address = reverse_geocode(latitude, longitude)
+
     # Create structured data
     processed_data = {
         "description": cleaned_description,
         "location": {
             "latitude": latitude,
-            "longitude": longitude
+            "longitude": longitude,
+            "address": physical_address
         },
         "image": image_info,
         "processed_at": datetime.utcnow().isoformat() + "Z",
