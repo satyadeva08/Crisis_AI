@@ -170,67 +170,50 @@ export const incidentService = {
     }
   },
 
-  /**
-   * Submit a new incident report.
-   * Inserts into incidents table and related tables.
-   */
   async create(formData) {
     try {
       const user = authService.getUser();
-      const userId = user?.role === 'citizen' ? user.id : null;
-
-      // Insert the main incident record
-      const { data: incident, error: incidentError } = await supabase
-        .from('incidents')
-        .insert({
-          title: `${formData.category} — Emergency Report`,
-          description: formData.description,
-          disaster_type: formData.category,
-          status: 'reported',
-          severity_level: 'medium', // Default until AI processes it
-          latitude: formData.location?.lat,
-          longitude: formData.location?.lng,
-          location_name: formData.location?.address,
-          reported_by: formData.contactName || 'Anonymous',
-          contact_name: formData.contactName,
-          contact_phone: formData.contactPhone,
-          user_id: userId,
-        })
-        .select()
-        .single();
-
-      if (incidentError) throw incidentError;
-
-      // Insert the text report
-      if (formData.description) {
-        await supabase.from('text_reports').insert({
-          incident_id: incident.incident_id,
-          report_text: formData.description,
-          title: `Report for ${formData.category}`,
-          processing_status: 'pending',
-          reported_at: new Date().toISOString(),
-        });
+      
+      const apiUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://127.0.0.1:5000');
+      
+      // Create multipart FormData to send to Python backend
+      const apiFormData = new FormData();
+      apiFormData.append('description', formData.description || '');
+      apiFormData.append('category', formData.category || 'General Emergency');
+      apiFormData.append('latitude', formData.location?.lat || '');
+      apiFormData.append('longitude', formData.location?.lng || '');
+      apiFormData.append('contactName', formData.contactName || (user?.email || 'Citizen Report'));
+      apiFormData.append('contactPhone', formData.contactPhone || '');
+      
+      if (formData.image) {
+        // Pass the raw File object directly
+        apiFormData.append('image', formData.image);
       }
 
-      // Insert initial timeline entry
-      await supabase.from('incident_updates').insert({
-        incident_id: incident.incident_id,
-        update_text: 'Incident reported and submitted for AI analysis',
-        update_time: new Date().toLocaleTimeString('en-IN', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true,
-        }),
+      const response = await fetch(`${apiUrl}/api/emergency/report`, {
+        method: 'POST',
+        body: apiFormData
       });
 
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || `Server responded with status ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      
+      if (!responseData.success) {
+        throw new Error(responseData.error || 'Failed to process emergency report via AI');
+      }
+
       return {
-        id: incident.incident_id,
-        status: 'reported',
-        severity: 'medium',
+        id: responseData.report.id,
+        status: responseData.report.status || 'reported',
+        severity: responseData.report.severity_level || 'medium',
       };
     } catch (err) {
-      console.error('Supabase create failed:', err.message);
-      throw new Error('Failed to create incident report');
+      console.error('API create failed:', err.message);
+      throw new Error(err.message || 'Failed to create incident report');
     }
   },
 
