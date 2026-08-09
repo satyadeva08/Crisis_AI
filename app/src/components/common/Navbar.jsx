@@ -1,11 +1,13 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Shield, Menu, X } from 'lucide-react';
+import { Shield, Menu, X, User as UserIcon, LogOut } from 'lucide-react';
 import { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import './Navbar.css';
 
 export default function Navbar({ variant = 'user' }) {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
 
   const isUser = variant === 'user';
 
@@ -53,6 +55,18 @@ export default function Navbar({ variant = 'user' }) {
             </div>
 
             <div className="navbar-actions">
+              {isAuthenticated && user?.role === 'citizen' ? (
+                <div className="navbar-user-menu">
+                  <span className="navbar-user-name"><UserIcon size={16} /> {user.name}</span>
+                  <button onClick={logout} className="navbar-logout-icon" title="Logout">
+                    <LogOut size={16} />
+                  </button>
+                </div>
+              ) : (
+                <Link to="/login" className="navbar-login-btn">
+                  Login
+                </Link>
+              )}
               <Link to="/report" className="navbar-cta">
                 Report Emergency
               </Link>

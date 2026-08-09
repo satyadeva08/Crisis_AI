@@ -52,9 +52,9 @@ export const authService = {
 
     const user = {
       id: data.user.id,
-      name: data.user.user_metadata?.name || 'Authority User',
+      name: data.user.user_metadata?.name || 'User',
       email: data.user.email,
-      role: 'authority',
+      role: data.user.user_metadata?.role || 'citizen',
     };
 
     localStorage.setItem('auth_token', data.session.access_token);
@@ -63,11 +63,37 @@ export const authService = {
   },
 
   /**
-   * Sign up a new officer.
+   * Check if an email is authorized to be an authority
    */
-  async signup(email, password, name) {
+  async checkEmailAuthorized(email) {
+    if (USE_MOCK) return true;
+    try {
+      const { data, error } = await supabase
+        .from('authorized_emails')
+        .select('id')
+        .eq('email', email)
+        .single();
+        
+      if (error || !data) return false;
+      return true;
+    } catch (err) {
+      return false;
+    }
+  },
+
+  /**
+   * Sign up a new user (authority or citizen).
+   */
+  async signup(email, password, name, role = 'citizen') {
     if (USE_MOCK) {
       throw new Error('Signup not supported in mock mode');
+    }
+
+    if (role === 'authority') {
+      const isAuthorized = await this.checkEmailAuthorized(email);
+      if (!isAuthorized) {
+        throw new Error('This email is not authorized to create an Authority account.');
+      }
     }
 
     const { data, error } = await supabase.auth.signUp({
@@ -75,7 +101,8 @@ export const authService = {
       password,
       options: {
         data: {
-          name: name || 'Authority User',
+          name: name || 'User',
+          role: role,
         }
       }
     });

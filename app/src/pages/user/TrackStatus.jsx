@@ -3,32 +3,54 @@ import { Search, Activity, CheckCircle2, AlertTriangle, ArrowRight, MapPin, Cloc
 import Navbar from '../../components/common/Navbar';
 import Badge from '../../components/common/Badge';
 import { useIncidents } from '../../context/IncidentContext';
+import { useAuth } from '../../context/AuthContext';
 import './TrackStatus.css';
 
 export default function TrackStatus() {
   const { fetchIncident } = useIncidents();
+  const { user, isAuthenticated } = useAuth();
   const [searchId, setSearchId] = useState('');
   const [historyIds, setHistoryIds] = useState([]);
+  const [userReports, setUserReports] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
 
   // Load history from localStorage on mount
   useEffect(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem('my_reports') || '[]');
-      // unique
-      const uniqueIds = [...new Set(stored)];
-      setHistoryIds(uniqueIds);
-      
-      // If there's exactly one, auto-load it
-      if (uniqueIds.length === 1 && !result) {
-        handleSearch(uniqueIds[0]);
+    async function loadData() {
+      let uniqueIds = [];
+      try {
+        const stored = JSON.parse(localStorage.getItem('my_reports') || '[]');
+        uniqueIds = [...new Set(stored)];
+        setHistoryIds(uniqueIds);
+      } catch (err) {
+        console.warn("Could not read history", err);
       }
-    } catch (err) {
-      console.warn("Could not read history", err);
+
+      // If logged in as citizen, fetch DB reports
+      if (isAuthenticated && user?.role === 'citizen') {
+        try {
+          const { incidentService } = await import('../../services/incidents.js');
+          const dbReports = await incidentService.getAllForUser(user.id);
+          setUserReports(dbReports);
+          
+          // Auto-load if exactly 1 report total and no search yet
+          if (uniqueIds.length === 0 && dbReports.length === 1 && !result) {
+            handleSearch(dbReports[0].id);
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      } else {
+        if (uniqueIds.length === 1 && !result) {
+          handleSearch(uniqueIds[0]);
+        }
+      }
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    
+    loadData();
+  }, [isAuthenticated, user]); // Reload if login state changes
 
   async function handleSearch(idToSearch) {
     const id = idToSearch || searchId;
@@ -141,11 +163,29 @@ export default function TrackStatus() {
               </div>
             </div>
           ) : (
-            historyIds.length > 0 && (
+            (historyIds.length > 0 || userReports.length > 0) && (
               <div className="track-history-section">
                 <h3 className="track-history-title">Your Recent Reports</h3>
                 <div className="track-history-list">
-                  {historyIds.map((id) => (
+                  {/* Database Reports */}
+                  {userReports.map((report) => (
+                    <button 
+                      key={report.id} 
+                      className="track-history-item"
+                      onClick={() => handleSearch(report.id)}
+                    >
+                      <div className="track-item-left">
+                        <span className="track-item-id">{report.title || report.id}</span>
+                        <span className="track-item-date">
+                          {report.status} • {new Date(report.reportedAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <ArrowRight size={18} color="var(--color-text-tertiary)" />
+                    </button>
+                  ))}
+
+                  {/* LocalStorage Reports (if not already listed in DB reports) */}
+                  {historyIds.filter(id => !userReports.find(r => r.id === id)).map((id) => (
                     <button 
                       key={id} 
                       className="track-history-item"
@@ -153,7 +193,7 @@ export default function TrackStatus() {
                     >
                       <div className="track-item-left">
                         <span className="track-item-id">{id}</span>
-                        <span className="track-item-date">Click to view status</span>
+                        <span className="track-item-date">Guest Session Report • Click to view status</span>
                       </div>
                       <ArrowRight size={18} color="var(--color-text-tertiary)" />
                     </button>

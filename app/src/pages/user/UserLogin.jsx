@@ -1,18 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Eye, EyeOff } from 'lucide-react';
+import { Shield, Eye, EyeOff, User, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import './Login.css';
+import './UserLogin.css';
 
-/**
- * Authority login page.
- * Clean centered form card inspired by CashSwap's auth modal.
- *
- * Demo credentials:
- *   Email: admin@disaster-response.gov
- *   Password: admin123
- */
-export default function Login() {
+export default function UserLogin() {
   const navigate = useNavigate();
   const { login, signup, isLoading, error, clearError } = useAuth();
 
@@ -30,48 +22,47 @@ export default function Login() {
     if (isLogin) {
       success = await login(email, password);
     } else {
-      success = await signup(email, password, name, 'authority');
+      success = await signup(email, password, name, 'citizen');
     }
     
     if (success) {
-      navigate('/authority/dashboard');
+      // Navigate to report emergency or dashboard based on user intent, typically home or report
+      navigate('/report');
     }
   }
 
   return (
-    <div className="login-page">
-      <div className="login-card animate-fade-in-up">
+    <div className="user-login-page">
+      <div className="user-login-card animate-fade-in-up">
         {/* Brand */}
-        <div className="login-brand">
-          <div className="login-brand-icon">
+        <div className="user-login-brand">
+          <div className="user-login-brand-icon">
             <Shield size={22} />
           </div>
-          <h1 className="login-brand-title">Command Center</h1>
-          <p className="login-brand-subtitle">
-            Authority access to the emergency response dashboard
+          <h1 className="user-login-brand-title">Citizen Portal</h1>
+          <p className="user-login-brand-subtitle">
+            Log in to automatically link reports to your account
           </p>
         </div>
 
         {/* Login form */}
-        <form className="login-form" onSubmit={handleSubmit}>
-          {/* Error message */}
+        <form className="user-login-form" onSubmit={handleSubmit}>
           {error && (
-            <div className="login-error">
+            <div className="user-login-error">
               {error}
             </div>
           )}
 
-          {/* Name - only for signup */}
           {!isLogin && (
-            <div className="login-field animate-fade-in">
-              <label className="login-label" htmlFor="login-name">
+            <div className="user-login-field animate-fade-in">
+              <label className="user-login-label" htmlFor="user-login-name">
                 Full Name
               </label>
               <input
-                id="login-name"
+                id="user-login-name"
                 type="text"
-                className="login-input"
-                placeholder="Officer Name"
+                className="user-login-input"
+                placeholder="John Doe"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required={!isLogin}
@@ -79,16 +70,15 @@ export default function Login() {
             </div>
           )}
 
-          {/* Email */}
-          <div className="login-field animate-fade-in">
-            <label className="login-label" htmlFor="login-email">
+          <div className="user-login-field animate-fade-in">
+            <label className="user-login-label" htmlFor="user-login-email">
               Email Address
             </label>
             <input
-              id="login-email"
+              id="user-login-email"
               type="email"
-              className="login-input"
-              placeholder="admin@disaster-response.gov"
+              className="user-login-input"
+              placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -96,16 +86,15 @@ export default function Login() {
             />
           </div>
 
-          {/* Password */}
-          <div className="login-field">
-            <label className="login-label" htmlFor="login-password">
+          <div className="user-login-field">
+            <label className="user-login-label" htmlFor="user-login-password">
               Password
             </label>
-            <div className="login-password-wrapper">
+            <div className="user-login-password-wrapper">
               <input
-                id="login-password"
+                id="user-login-password"
                 type={showPassword ? 'text' : 'password'}
-                className="login-input"
+                className="user-login-input"
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -113,7 +102,7 @@ export default function Login() {
               />
               <button
                 type="button"
-                className="login-password-toggle"
+                className="user-login-password-toggle"
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
@@ -122,22 +111,20 @@ export default function Login() {
             </div>
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
-            className="login-submit"
+            className="user-login-submit"
             disabled={isLoading}
           >
             {isLoading ? (isLogin ? 'Signing in…' : 'Creating account…') : (isLogin ? 'Sign In' : 'Create Account')}
           </button>
           
-          {/* Toggle Mode */}
-          <div className="login-footer">
-            <p className="login-footer-text">
+          <div className="user-login-footer">
+            <p className="user-login-footer-text">
               {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
               <button 
                 type="button" 
-                className="login-footer-link"
+                className="user-login-footer-link"
                 onClick={() => {
                   setIsLogin(!isLogin);
                   clearError();
@@ -147,6 +134,18 @@ export default function Login() {
               </button>
             </p>
           </div>
+          
+          <div className="user-login-divider">
+            <span>or</span>
+          </div>
+          
+          <button 
+            type="button" 
+            className="user-login-guest-btn"
+            onClick={() => navigate('/report')}
+          >
+            <User size={16} /> Continue as Guest <ArrowRight size={16} style={{marginLeft: 'auto'}} />
+          </button>
 
         </form>
       </div>

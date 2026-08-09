@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { authService } from './auth';
 // Mock data removed — strictly using real database now
 
 /**
@@ -121,6 +122,30 @@ export const incidentService = {
   },
 
   /**
+   * Fetch all incidents for a specific user ID
+   */
+  async getAllForUser(userId) {
+    try {
+      const { data, error } = await supabase
+        .from('incidents')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+        
+      if (error) throw error;
+      return data.map(inc => ({
+        id: inc.incident_id,
+        title: inc.title,
+        status: inc.status,
+        reportedAt: inc.created_at,
+      }));
+    } catch (err) {
+      console.error('Failed to fetch user incidents', err);
+      return [];
+    }
+  },
+
+  /**
    * Fetch a single incident by ID, including AI analysis and timeline.
    */
   async getById(id) {
@@ -151,6 +176,9 @@ export const incidentService = {
    */
   async create(formData) {
     try {
+      const user = authService.getUser();
+      const userId = user?.role === 'citizen' ? user.id : null;
+
       // Insert the main incident record
       const { data: incident, error: incidentError } = await supabase
         .from('incidents')
@@ -166,6 +194,7 @@ export const incidentService = {
           reported_by: formData.contactName || 'Anonymous',
           contact_name: formData.contactName,
           contact_phone: formData.contactPhone,
+          user_id: userId,
         })
         .select()
         .single();

@@ -42,10 +42,10 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const signup = useCallback(async (email, password, name) => {
+  const signup = useCallback(async (email, password, name, role = 'citizen') => {
     dispatch({ type: 'LOGIN_START' });
     try {
-      await authService.signup(email, password, name);
+      await authService.signup(email, password, name, role);
       // Automatically log them in after sign up
       const { user } = await authService.login(email, password);
       dispatch({ type: 'LOGIN_SUCCESS', payload: user });

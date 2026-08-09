@@ -8,6 +8,7 @@ import ReportEmergency from './pages/user/ReportEmergency';
 import Processing from './pages/user/Processing';
 import Success from './pages/user/Success';
 import TrackStatus from './pages/user/TrackStatus';
+import UserLogin from './pages/user/UserLogin';
 
 // Authority pages
 import Login from './pages/authority/Login';
@@ -15,6 +16,10 @@ import Dashboard from './pages/authority/Dashboard';
 import IncidentDetails from './pages/authority/IncidentDetails';
 import LiveMap from './pages/authority/LiveMap';
 import Analytics from './pages/authority/Analytics';
+
+// Admin pages
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
 
 /**
  * Route guard for authority pages.
@@ -39,6 +44,7 @@ function AppRoutes() {
     <Routes>
       {/* ── User Side ── */}
       <Route path="/" element={<Landing />} />
+      <Route path="/login" element={<UserLogin />} />
       <Route path="/report" element={<ReportEmergency />} />
       <Route path="/report/processing" element={<Processing />} />
       <Route path="/report/success" element={<Success />} />
@@ -78,6 +84,11 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+
+      {/* ── Admin Side ── */}
+      <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
       {/* Fallback — redirect unknown routes to home */}
       <Route path="*" element={<Navigate to="/" replace />} />
