@@ -26,20 +26,11 @@ async function tryConnect() {
     await client.connect();
     console.log(`SUCCESS! Connected.`);
     
-    // Run the initial schema
+    // Run the incident_updates setup
     try {
-      await runSqlFile(client, 'crisisai_complete.sql');
+      await runSqlFile(client, 'incident_updates.sql');
     } catch (err) {
-      console.error(`Error running crisisai_complete.sql:`, err);
-      // Wait, if it fails because tables exist, we can ignore, but it failed previously.
-      // We still want to try running admin_setup.sql just in case.
-    }
-    
-    // Run the admin setup
-    try {
-      await runSqlFile(client, 'admin_setup.sql');
-    } catch (err) {
-      console.error(`Error running admin_setup.sql:`, err);
+      console.error(`Error running incident_updates.sql:`, err);
     }
     
     console.log('ALL DONE!');

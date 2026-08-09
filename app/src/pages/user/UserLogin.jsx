@@ -21,13 +21,20 @@ export default function UserLogin() {
     let success;
     if (isLogin) {
       success = await login(email, password);
+      
+      // Auto-switch to create account if user not found or invalid credentials
+      if (!success) {
+        // We can check the error message in the context or just switch automatically
+        // Let's just switch to signup mode
+        setIsLogin(false);
+      }
     } else {
       success = await signup(email, password, name, 'citizen');
     }
     
     if (success) {
-      // Navigate to report emergency or dashboard based on user intent, typically home or report
-      navigate('/report');
+      // Navigate to home page as requested
+      navigate('/');
     }
   }
 
