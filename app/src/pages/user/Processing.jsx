@@ -57,6 +57,9 @@ export default function Processing() {
   }, [location.state, submitIncident]);
 
   useEffect(() => {
+    // If an error occurred, stop the animation immediately
+    if (submitError || isComplete) return;
+
     // Animate through each step with a delay
     const stepDuration = 1200; // milliseconds per step
 
@@ -69,9 +72,6 @@ export default function Processing() {
           
           // Wait for both animation to finish AND the API call to complete
           const checkCompletion = setInterval(() => {
-            // We need to access the latest state, but we're in an effect.
-            // A simpler approach is just to check if realIncidentId is populated,
-            // but we can't cleanly access it here. Let's just set animation complete.
             setIsComplete(true);
             clearInterval(checkCompletion);
           }, 100);
@@ -84,7 +84,7 @@ export default function Processing() {
     }, stepDuration);
 
     return () => clearInterval(timer);
-  }, []); // Run once on mount
+  }, [submitError, isComplete, processingSteps.length]); // Re-run if submitError changes
 
   // Watch for both animation completion AND submission completion
   useEffect(() => {
@@ -143,7 +143,7 @@ export default function Processing() {
                     <div className="processing-step-indicator">
                       {stepStatus === 'done' ? (
                         <CheckCircle2 size={18} />
-                      ) : stepStatus === 'active' ? (
+                      ) : stepStatus === 'active' && !submitError ? (
                         <Loader2 size={18} className="loading-spinner-icon" />
                       ) : (
                         <StepIcon size={18} />
@@ -158,7 +158,7 @@ export default function Processing() {
             {submitError && (
               <div className="processing-error-message" style={{ marginTop: '20px', padding: '15px', backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
                 <h3 style={{ margin: '0 0 5px 0', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Shield size={16} /> API Error
+                  <Shield size={16} /> Error
                 </h3>
                 <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.4' }}>
                   {submitError}
