@@ -160,6 +160,7 @@ Identify:
 - accessibility problems
 - possible rescue requirements
 - vulnerable surroundings (e.g., dense buildings near a fire)
+- visible terrain/geography (e.g., mountainous/hilly, coastal/ocean, riverbank, urban, rural, forest)
 
 Estimate visual severity from 1 to 10.
 
